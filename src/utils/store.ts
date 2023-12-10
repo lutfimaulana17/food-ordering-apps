@@ -1,5 +1,6 @@
 import { ActionTypes, CartType } from "@/types/types"
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
 const INITIAL_STATE = {
     products: [],
@@ -7,7 +8,7 @@ const INITIAL_STATE = {
     totalPrice: 0
 }
 
-export const useCartStore = create<CartType & ActionTypes>((set, get)=>({
+export const useCartStore = create(persist<CartType & ActionTypes>((set, get)=>({
     products: INITIAL_STATE.products,
     totalItems: INITIAL_STATE.totalItems,
     totalPrice: INITIAL_STATE.totalPrice,
@@ -25,4 +26,4 @@ export const useCartStore = create<CartType & ActionTypes>((set, get)=>({
             totalPrice: state.totalPrice - item.price
         }))
     }
-}))
+}),{name:"cart", skipHydration: true} ))
