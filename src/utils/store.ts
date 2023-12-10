@@ -13,15 +13,34 @@ export const useCartStore = create(persist<CartType & ActionTypes>((set, get)=>(
     totalItems: INITIAL_STATE.totalItems,
     totalPrice: INITIAL_STATE.totalPrice,
     addToCart(item) {
-        set((state) => ({
-            products:[...state.products, item], 
-            totalItems: state.totalItems + item.quantity,
-            totalPrice: state.totalPrice + item.price
-        }))
+
+        const products = get().products
+        console.log('products >>>>', products)
+        console.log('item >>>>', item)
+        const productInState = products.find(product=>product.id === item.id && product.optionTitle === item.optionTitle)
+
+        if (productInState) {
+            const updatedProducts = products.map(product=> product.id === productInState.id && product.optionTitle === productInState.optionTitle ? {
+                ...item,
+                quantity: item.quantity + product.quantity,
+                price: item.price + product.price
+            } : item)
+            set((state) =>({
+                products: updatedProducts,
+                totalItems: state.totalItems + item.quantity,
+                totalPrice: state.totalPrice + item.price
+            }))
+        } else {
+            set((state) => ({
+                products:[...state.products, item], 
+                totalItems: state.totalItems + item.quantity,
+                totalPrice: state.totalPrice + item.price
+            }))
+        }
     },
     removeFromCart(item) {
         set((state)=>({
-            products: state.products.filter(product=> product.id !== item.id),
+            products: state.products.filter(product=> !(product.optionTitle === item.optionTitle && product.id === item.id)),
             totalItems: state.totalItems - item.quantity,
             totalPrice: state.totalPrice - item.price
         }))
