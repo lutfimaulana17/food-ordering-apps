@@ -1,8 +1,9 @@
 "use client"
 
-import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { LinkAuthenticationElement, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import getBaseUrl from '@/helper/getBaseUrl'
+import AddressForm from "./AddressForm";
 
 const CheckoutForm = () => {
     const stripe = useStripe();
@@ -79,9 +80,11 @@ const CheckoutForm = () => {
     };
 
     return (
-        <form id="payment-form" onSubmit={handleSubmit}>
+        <form id="payment-form" onSubmit={handleSubmit} className="min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-15rem)] p-4 lg:px-20 xl:px-40 flex flex-col gap-8">
+            <LinkAuthenticationElement id="link-authentication-element" />
             <PaymentElement id="payment-element" options={{ layout: "tabs" }} />
-            <button disabled={isLoading || !stripe || !elements} id="submit">
+            <AddressForm />
+            <button disabled={isLoading || !stripe || !elements} id="submit" className="bg-red-500 text-white p-4 rounded-md w-28">
                 <span id="button-text">
                 {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
                 </span>

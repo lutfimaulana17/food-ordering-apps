@@ -13,11 +13,12 @@ const SuccessPage = () => {
     const hostApi = getBaseUrl()
     const getConfirmPayment = async () => {
       try {
-        const hostApi = getBaseUrl()
         await fetch(`${hostApi}/api/confirm/${payment_intent}`, {
-          method: 'PUT'
+          method: 'POST'
         })
-        router.push('/orders')
+        setTimeout(() => {
+          router.push('/orders')
+        }, 5000);
       } catch (error) {
         console.log(error)
       }

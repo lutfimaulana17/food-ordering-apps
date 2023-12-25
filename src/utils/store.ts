@@ -15,8 +15,6 @@ export const useCartStore = create(persist<CartType & ActionTypes>((set, get)=>(
     addToCart(item) {
 
         const products = get().products
-        console.log('products >>>>', products)
-        console.log('item >>>>', item)
         const productInState = products.find(product=>product.id === item.id && product.optionTitle === item.optionTitle)
 
         if (productInState) {
