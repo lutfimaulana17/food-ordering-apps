@@ -9,7 +9,7 @@ type Inputs = {
     title: string;
     desc: string;
     price: number;
-    catSlug: string;
+    categorySlug: string;
 }
 
 type Option = {
@@ -23,7 +23,7 @@ const AddPage = () => {
     title: '',
     desc: '',
     price: 0,
-    catSlug: ''
+    categorySlug: ''
   })
 
   const [option, setOption] = useState<Option>({
@@ -68,6 +68,7 @@ const AddPage = () => {
         })
 
         const data = await res.json()
+        console.log('data >>>', data)
         router.push(`/product/${data.id}`)
     } catch (error) {
         console.log(error)
@@ -84,7 +85,7 @@ const AddPage = () => {
             </div>
             <div className='w-full flex flex-col gap-2'>
                 <label>Desc</label>
-                <textarea className='ring-1 ring-red-200 p-2 rounded-sm' name="desc" />
+                <textarea onChange={handleChange} className='ring-1 ring-red-200 p-2 rounded-sm' name="desc" />
             </div>
             <div className='w-full flex flex-col gap-2'>
                 <label>Price</label>
@@ -92,7 +93,7 @@ const AddPage = () => {
             </div>
             <div className='w-full flex flex-col gap-2'>
                 <label>Category</label>
-                <input onChange={handleChange} className='ring-1 ring-red-200 p-2 rounded-sm' type="text" name="category" />
+                <input onChange={handleChange} className='ring-1 ring-red-200 p-2 rounded-sm' type="text" placeholder="pizzas" name="categorySlug" />
             </div>
             <div className='w-full flex flex-col gap-2'>
                 <label>Options</label>
