@@ -32,6 +32,7 @@ const AddPage = () => {
   })
 
   const [options, setOptions] = useState<Option[]>([])
+  const [file, setFile] = useState<File>()
   
   const router = useRouter()
 
@@ -55,20 +56,43 @@ const AddPage = () => {
     })
   }
 
+  const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement
+    const item = (target.files as FileList)[0]
+    setFile(item)
+  }
+
+  const upload = async () => {
+    const data = new FormData()
+    data.append("file", file!)
+    data.append('upload_preset', 'foodordering')
+    const res = await fetch('https://api.cloudinary.com/v1_1/lutfi17/image', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+        body: data
+    })
+
+    const resData =  await res.json()
+    return resData.url
+  }
+
   const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
+        const url = await upload()
         const hostApi = getBaseUrl()
         const res = await fetch(`${hostApi}/api/products`, {
             method: 'POST',
             body: JSON.stringify({
                 ...inputs,
-                options
+                options,
+                img: url
             })
         })
 
         const data = await res.json()
-        console.log('data >>>', data)
         router.push(`/product/${data.id}`)
     } catch (error) {
         console.log(error)
@@ -79,6 +103,10 @@ const AddPage = () => {
     <div>
         <form className='shadow-lg flex flex-wrap gap-4 p-8' onSubmit={handleSubmit}>
             <h1>Add New Product</h1>
+            <div className='w-full flex flex-col gap-2'>
+                <label>Image</label>
+                <input className='ring-1 ring-red-200 p-2 rounded-sm' type="file" onChange={handleChangeImg} />
+            </div>
             <div className='w-full flex flex-col gap-2'>
                 <label>Title</label>
                 <input onChange={handleChange} className='ring-1 ring-red-200 p-2 rounded-sm' type="text" name="title" />
